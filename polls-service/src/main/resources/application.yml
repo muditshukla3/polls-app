@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    username: sa
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    password: ''
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    time-zone: UTC
+
+application:
+  security:
+    jwt:
+      secret-key: 14289f58a7aee8b95577302a874a70c7ac61becf3faa6ea8ccd0e0825fca8ace
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 6048000000 # 7 days
