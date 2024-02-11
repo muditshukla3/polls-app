@@ -3,6 +3,7 @@ package com.ms.polls.controller;
 import com.ms.polls.response.ApiResponse;
 import com.ms.polls.response.UserIdentityAvailability;
 import com.ms.polls.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/api/users")
 @RequiredArgsConstructor
+@SecurityRequirements
 public class UserController {
 
     private final UserService userService;

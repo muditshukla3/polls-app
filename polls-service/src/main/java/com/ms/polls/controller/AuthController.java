@@ -7,6 +7,7 @@ import com.ms.polls.response.SignupResponse;
 import com.ms.polls.service.AuthenticationService;
 import com.ms.polls.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @RestController("/api/auth")
 @RequiredArgsConstructor
+@SecurityRequirements
 public class AuthController {
 
     private final AuthenticationService authenticationService;
