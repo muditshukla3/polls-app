@@ -12,8 +12,10 @@ import com.ms.polls.repository.RoleRepository;
 import com.ms.polls.repository.UserRepository;
 import com.ms.polls.repository.VoteRepository;
 import com.ms.polls.request.SignupRequest;
+import com.ms.polls.response.SignupResponse;
 import com.ms.polls.response.UserProfile;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,6 @@ import java.util.Collections;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final VoteRepository voteRepository;
     private final PollRepository pollRepository;
 
@@ -39,7 +40,7 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public UserRecord createUser(SignupRequest request){
+    public SignupResponse createUser(SignupRequest request){
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
@@ -47,12 +48,14 @@ public class UserService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(()->new AppException("User Role not set"));
-        user.setRoles(Collections.singleton(userRole));
+        user.setRole(Role.USER);
         User savedUser = userRepository.save(user);
 
-        return mapper.convertUserEntityToUserRecord(savedUser);
+        if(savedUser.getId()!=null){
+            return new SignupResponse(true);
+        }else{
+            return new SignupResponse(false);
+        }
     }
 
     public UserProfile userProfile(String username){
@@ -71,4 +74,8 @@ public class UserService {
                 .build();
     }
 
+    public User findByUsername(String username){
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+    }
 }

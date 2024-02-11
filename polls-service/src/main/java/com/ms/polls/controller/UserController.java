@@ -1,20 +1,13 @@
 package com.ms.polls.controller;
 
-import com.ms.polls.dto.UserRecord;
-import com.ms.polls.request.SignupRequest;
 import com.ms.polls.response.ApiResponse;
 import com.ms.polls.response.UserIdentityAvailability;
 import com.ms.polls.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/api/users")
 @RequiredArgsConstructor
@@ -46,40 +39,5 @@ public class UserController {
                 .data(userService.userProfile(username))
                 .build();
         return ResponseEntity.ok(apiResponse);
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<ApiResponse> createProfile(@Valid @RequestBody SignupRequest request){
-
-        if(userService.checkUsername(request.getUsername())){
-            return new ResponseEntity(
-                            ApiResponse
-                                    .builder()
-                                    .data("")
-                                    .errors(List.of("Username " + request.getUsername() + " already exists"))
-                                    .build(), HttpStatus.BAD_REQUEST);
-        }
-
-        if(userService.checkEmail(request.getEmail())){
-            return new ResponseEntity(
-                    ApiResponse
-                            .builder()
-                            .data("")
-                            .errors(List.of("Email " + request.getEmail() + " already exists"))
-                            .build(), HttpStatus.BAD_REQUEST);
-        }
-
-        UserRecord user = userService.createUser(request);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{username}")
-                .buildAndExpand(user.username()).toUri();
-
-        return ResponseEntity
-                .created(location)
-                .body(ApiResponse
-                        .builder()
-                        .data(user)
-                        .build());
     }
 }

@@ -15,30 +15,29 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
-    public void saveRefreshToken(User user, String refreshToken) {
-        Token token = Token
-                .builder()
-                .expired(false)
-                .token(refreshToken)
+    public Token saveToken(String tokenString, User user){
+        Token token = Token.builder()
+                .token(tokenString)
                 .tokenType(TokenType.BEARER)
                 .revoked(false)
                 .user(user)
                 .build();
-        tokenRepository.save(token);
-
+        return tokenRepository.save(token);
     }
 
-    public void revokeAllTokens(User user) {
-        List<Token> allValidTokenByUser = tokenRepository
-                .findAllValidTokensByUser(user.getId());
-        if(!allValidTokenByUser.isEmpty()){
-            allValidTokenByUser.forEach(
-                    token -> {
-                        token.setExpired(true);
-                        token.setRevoked(true);
-                    }
-            );
-            tokenRepository.saveAll(allValidTokenByUser);
+    public Token saveToken(Token token){
+        return tokenRepository.save(token);
+    }
+    public void revokeTokens(Long id){
+        List<Token> allValidTokensByUser = tokenRepository.findAllValidTokensByUser(id);
+        if(allValidTokensByUser.isEmpty()){
+            return;
         }
+        allValidTokensByUser.forEach(token -> token.setRevoked(true));
+        tokenRepository.saveAll(allValidTokensByUser);
+    }
+
+    public Token getToken(String token){
+        return tokenRepository.findByToken(token).orElse(null);
     }
 }
