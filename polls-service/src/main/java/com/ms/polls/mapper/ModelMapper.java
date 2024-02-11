@@ -14,10 +14,7 @@ public class ModelMapper {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .name(user.getName())
-                .role(user
-                        .getRoles()
-                        .stream()
-                        .map(role -> role.getName().name()).collect(Collectors.toList()))
+                .role(user.getRole())
                 .build();
     }
 }

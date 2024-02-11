@@ -1,14 +1,10 @@
 package com.ms.polls.service;
 
-import com.ms.polls.dto.UserRecord;
 import com.ms.polls.entity.Role;
-import com.ms.polls.entity.RoleName;
 import com.ms.polls.entity.User;
-import com.ms.polls.exception.AppException;
 import com.ms.polls.exception.ResourceNotFoundException;
 import com.ms.polls.mapper.ModelMapper;
 import com.ms.polls.repository.PollRepository;
-import com.ms.polls.repository.RoleRepository;
 import com.ms.polls.repository.UserRepository;
 import com.ms.polls.repository.VoteRepository;
 import com.ms.polls.request.SignupRequest;
@@ -19,8 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -30,7 +24,6 @@ public class UserService {
     private final PollRepository pollRepository;
 
     private final BCryptPasswordEncoder passwordEncoder;
-    private final ModelMapper mapper;
 
     public boolean checkUsername(String username){
         return userRepository.existsByUsername(username);

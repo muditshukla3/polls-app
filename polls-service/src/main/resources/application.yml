@@ -4,10 +4,6 @@ spring:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
     password: ''
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
   jpa:
     properties:
       hibernate:
@@ -25,7 +21,7 @@ spring:
 application:
   security:
     jwt:
-      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-      expiration: 86400000 # a day
+      secret-key: 6241366352563d337a267e5e3454373f69582478374f375c3c3a537731
+      expiration: 600000 # 10 min
       refresh-token:
-        expiration: 6048000000 # 7 days
+        expiration: 604800000 # 7 days
