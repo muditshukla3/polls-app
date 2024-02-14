@@ -23,6 +23,8 @@ public class SecurityConfig {
     private static final String[] ALLOWED_URLS= {
             "/api/auth/register",
             "/api/auth/authenticate",
+            "/api/users/validate/**",
+            "/api/users/email/validate/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**",
@@ -44,7 +46,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(ALLOWED_URLS).permitAll()
-                                .requestMatchers(HttpMethod.GET,"/api/polls/**").permitAll()
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
