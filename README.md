@@ -8,4 +8,9 @@ This repository contains front end and bakend code for polls application. Using 
 - Docker
 - React
 
+## Activating profile
+```
+mvn spring-boot:run -Dspring-boot.run.profiles=prod
+```
+
 The application will be developed over a period of time and I will be adding features of oAuth2 PKCE using Keycloak as well.
