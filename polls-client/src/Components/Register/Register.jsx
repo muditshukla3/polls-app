@@ -1,28 +1,14 @@
 import { Button, Form, Input, Result, message } from "antd";
-import React, { useState } from "react"; 
 import { Link } from "react-router-dom";
 import axios from '../../api/axios';
 
 const USERNAME_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{2,10}$/;
 const PASSWORD_REGEX = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$]{6,15}$/;
 function Register() {
-
-  const [isUsernameAvailable, setIsUsernameAvailable] = useState(true);
-  const [isEmailAvailable, setIsEmailAvailable] = useState(true); 
-
+  
   const onFinish = async (values) => {
     console.log('Received values:', values);
-    // first check the validity of username and email
-    if (!isUsernameAvailable) {
-      message.error('Username is already taken');
-      return;
-    }
-
-    if (!isEmailAvailable) {
-      message.error('Email is already registered');
-      return;
-    }
-
+    
     try{
         const response = await axios.post("/auth/register", 
                                       {
@@ -49,34 +35,35 @@ function Register() {
     }
   };
 
-  const validateUsername = async (rule, value) => {
+  const validateUsername = async (username) => {
     try {
-      const response = await axios.get(`/users/validate/${value}`);
-      setIsUsernameAvailable(response.data.available);
+      const response = await axios.get(`/users/validate/${username}`);
       if (!response.data.available) {
-        throw new Error('Username is not available');
+        return 'false';
       }
+      return 'true';
     } catch (error) {
-      throw new Error('Failed to validate username');
+      return 'error';
     }
   };
 
-  const validateEmail = async (rule, value) => {
+  const validateEmail = async (email) => {
     try {
-      const response = await axios.get(`/users/email/validate/${value}`);
-      setIsEmailAvailable(response.data.available);
+      const response = await axios.get(`/users/email/validate/${email}`);
       if (!response.data.available) {
-        throw new Error('Email is not available');
+        return 'false';
       }
+      return 'true';
     } catch (error) {
-      throw new Error('Failed to validate email');
+      return 'error';
     }
   };
-
+  
   return (
         <div style={{width: '400px', height:'400px'}}>
             <p>Register</p>
-            <Form autoComplete="off" 
+            <Form 
+                  autoComplete="off" 
                   labelCol={{span:10}} 
                   wrapperCol={{span: 14}}
                   layout="horizontal"
@@ -114,9 +101,20 @@ function Register() {
                     pattern: USERNAME_REGEX,
                     message: 'Username must start with a letter and be 3 to 8 characters long, containing only letters, digits, underscores, or hyphens.'
                   },
-                  {
-                    validator: validateUsername
-                  }
+                  () => ({
+                    validator(_, value){
+                      if(value.length > 3){
+                        const result = validateUsername(value)
+                        if(result === 'true'){
+                            return Promise.resolve()
+                        }else if(result === 'false'){
+                            return Promise.reject('Username already registered')
+                        }else{
+                          return Promise.reject("Error validating username")
+                        }
+                      }
+                    }
+                  })
                 ]}
                 >
                 <Input placeholder="Type your username" />
@@ -169,9 +167,20 @@ function Register() {
                   {
                     type: "email"
                   },
-                  {
-                    validator: validateEmail
-                  }
+                  () => ({
+                    validator(_, value){
+                      if(value.length > 6){
+                        const result = validateEmail(value)
+                        if(result === 'true'){
+                            return Promise.resolve()
+                        }else if(result === 'false'){
+                            return Promise.reject('Email already registered')
+                        }else{
+                          return Promise.reject("Error validating email")
+                        }
+                      }
+                    }
+                  })
                 ]}>
                 <Input placeholder="Type your email" />
               </Form.Item>
