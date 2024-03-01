@@ -23,16 +23,16 @@ public class UserController {
     public ResponseEntity<ApiResponse> checkUsername(@PathVariable String username){
         boolean userNameAvailable = userService.checkUsername(username);
         ApiResponse apiResponse = ApiResponse.builder()
-                .data(new UserIdentityAvailability(userNameAvailable))
+                .data(new UserIdentityAvailability(!userNameAvailable))
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/email/validate/{email}")
     public ResponseEntity<ApiResponse> checkEmail(@PathVariable String email){
-        boolean userNameAvailable = userService.checkEmail(email);
+        boolean emailAvailable = userService.checkEmail(email);
         ApiResponse apiResponse = ApiResponse.builder()
-                .data(new UserIdentityAvailability(userNameAvailable))
+                .data(new UserIdentityAvailability(!emailAvailable))
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
